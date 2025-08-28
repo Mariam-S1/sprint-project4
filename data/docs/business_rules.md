@@ -18,6 +18,12 @@ The discount is a decimal value (e.g., 0.1 for 10% off).
     * Q3: months `07` to `09`
     * Q4: months `10` to `12`
 
+### Late Orders
+- Late = ShippedDate > RequiredDate.
+
+
+### Discontinued Products
+- **Products.Discontinued = 1** → Product is inactive.
 ## Data Ambiguity
 
 * "Last year" is an ambiguous term. If the user asks for "last year's sales" without specifying a year, the agent should ask for clarification, such as "Do you mean sales from 1997 or 1998?"
