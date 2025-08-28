@@ -1,0 +1,6 @@
+langchain
+python-dotenv
+faiss-cpu            # For FAISS
+langchain-google-genai  # Gemini embeddings
+openai               # OpenAI embeddings
+tiktoken
