@@ -1,6 +1,6 @@
 # Northwind Database Schema Overview
 
-The Northwind database contains information about a fictional company that sells food products. It's structured to track products, sales, customers, suppliers, and employees.
+The Northwind database contains information about a fictional company that sells food products. It's structured to track Customers, Orders, OrderDetails, Products, Suppliers, Employees, Shippers, Categories.
 
 ## Table Relationships
 
