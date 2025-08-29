@@ -1,4 +1,6 @@
 langchain
+langchain-text-splitters
+langchain-community
 python-dotenv
 faiss-cpu            # For FAISS
 langchain-google-genai  # Gemini embeddings
