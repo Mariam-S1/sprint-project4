@@ -1,46 +1,44 @@
 # app.py
-"""
-Simple CLI app to demonstrate NL->SQL and execution.
-"""
 from agents import NL2SQLAgent, SQLExecutorAgent
-from config import settings
-
-BANNER = """
-Northwind Agentic RAG — NL→SQL + SQL Executor
-Type a question (or 'quit'). Examples:
-- Which customers ordered the most in 1997?
-- What are the top 3 selling product categories in France?
-- How many suppliers are based in the UK?
-- What is the total revenue in Q2 1997?
-"""
+from db import SQLiteClient
 
 def main():
-    gen = NL2SQLAgent()
-    exe = SQLExecutorAgent(settings.DB_PATH)
-    print(BANNER)
+    print("🔹 Northwind Agentic RAG — NL→SQL + SQL Executor")
+    print("Type a question (or 'quit'):\n"
+          "Examples:\n"
+          "- Which customers ordered the most in 2024?\n"
+          "- What are the top 3 selling product categories in France?\n"
+          "- How many suppliers are based in the UK?\n"
+          "- What is the total revenue in Q2 2023?\n")
+
+    # Initialize agents
+    db_client = SQLiteClient("northwind.db")
+    sql_agent = SQLExecutorAgent(db_client)
+    nl2sql_agent = NL2SQLAgent()
+
     while True:
-        q = input("\nYour question> ").strip()
-        if q.lower() in {"quit", "exit"}:
-            print("Bye.")
+        question = input("Your question> ").strip()
+        if question.lower() in ["quit", "exit"]:
+            print("Goodbye!")
             break
-        plan = gen.run(q)
-        if plan.get("needs_clarification"):
-            print("\n⚠️ Clarification needed:", plan.get("clarifying_question"))
-            follow = input("Your answer> ").strip()
-            q2 = q + " Additional details: " + follow
-            plan = gen.run(q2)
-        sql = plan.get("sql", "").strip()
+        if not question:
+            continue
+
+        # Generate SQL using NL2SQLAgent
+        gen_result = nl2sql_agent.run(question)
+        sql = gen_result.get("sql", "")
+        if gen_result.get("needs_clarification"):
+            print(f"❗ Clarification needed: {gen_result.get('clarifying_question')}")
+            continue
         if not sql:
-            print("\n❌ No SQL generated. Reasoning:", plan.get("reasoning"))
+            print(f"❌ Failed to generate SQL: {gen_result.get('reasoning')}")
             continue
-        print("\n🔎 SQL generated:\n")
-        print(sql)
-        result = exe.run(sql)
-        if result.get("error"):
-            print("\n❌ Error:", result["error"])
-            continue
-        print(f"\n✅ Rows: {result['rows']}\n")
-        print(result["table_markdown"])
+
+        print("\n🔎 SQL generated:\n", sql)
+
+        # Execute SQL safely
+        result = sql_agent.run(sql)
+        print("\n💡 Query Result:\n", result)
 
 if __name__ == "__main__":
     main()
