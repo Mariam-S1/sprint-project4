@@ -18,7 +18,6 @@ class Settings(BaseSettings):
     VS_DIR: str = "data/vectorstore"
 
     # Retriever settings
-    RETRIEVAL_K: int = 6
 
     class Config:
         env_file = ".env"
